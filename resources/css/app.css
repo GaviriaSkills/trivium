@@ -430,6 +430,7 @@ body {
 .paragraph {
   display: flex;
   margin-bottom: 4em;
+  align-items: center;
 }
 
 .paragraph.vertical {
@@ -439,6 +440,7 @@ body {
 
   & p {
     width: 80%;
+    margin-bottom: 2em;
   }
 
   & img {
@@ -456,7 +458,7 @@ body {
 .paragraph p {
   width: 61%;
   margin: 0 3%;
-  font-size: 19px;
+  font-size: 22px;
   color: white;
 }
 

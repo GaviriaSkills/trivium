@@ -127,66 +127,33 @@
                             <div class="paragraph">
                                 <img src="{{ asset('images/welcome/TRIVIUM-36.jpg') }}" alt>
                                 <p>
-                                    Así fue como nació Trivium, nuestro emprendimiento de cerveza
-                                    artesanal. Desde hace años, los tres compartimos una pasión
-                                    profunda por la buena cerveza. Nos encantaba explorar
-                                    diferentes
-                                    estilos y probar cervezas artesanales de todo el mundo,
-                                    maravillándonos con la variedad de sabores, aromas y la
-                                    calidad
-                                    que estas ofrecían, gracias a sus técnicas tradicionales y
-                                    cuidado
-                                    artesanal.
+                                    Somos tres amigos unidos por una misma pasión: la cerveza artesanal.
+                                    Después de años explorando estilos del mundo, en 2022 decidimos crear 
+                                    los nuestros.
                                     <br>
                                     <br>
-                                    En 2022, decidimos que era momento de llevar nuestra pasión un
-                                    paso más allá. Nos inscribimos en un curso intensivo de
-                                    cerveza
-                                    artesanal, donde aprendimos desde los fundamentos básicos
-                                    hasta
-                                    técnicas avanzadas de elaboración. Durante semanas, nos
-                                    sumergimos en el proceso detallado de malteado, maceración,
-                                    hervido, fermentación y embotellado. Aprendimos sobre la
-                                    importancia de los ingredientes de calidad, las levaduras
-                                    adecuadas
-                                    para cada estilo y cómo controlar parámetros clave como la
-                                    temperatura y el pH para obtener resultados consistentes y
-                                    deliciosos.
+                                    Nos formamos, experimentamos, debatimos y perfeccionamos cada receta 
+                                    hasta dar con lo que hoy es Trivium:
                                 </p>
                             </div>
                             <div class="paragraph">
                                 <p>
-                                    El curso no solo nos brindó conocimientos técnicos, sino también una 
-                                    mayor apreciación por la ciencia y el arte detrás de cada cerveza 
-                                    artesanal. Nos inspiró a experimentar con nuestras propias recetas y a 
-                                    perfeccionar nuestras habilidades como cerveceros caseros.
-
+                                    Una IPA intensa y aromática<br>
+                                    Una Golden Ale suave y refrescante<br>
+                                    Una Irish Red Ale con carácter y equilibrio<br>
+                                    Una Porter tostada y llena de sabor<br>
                                     <br>
                                     <br>
-                                    Con el tiempo, nuestras reuniones se transformaron en sesiones de cata y
-                                    experimentación. Cada uno aportaba ideas y sabores para desarrollar 
-                                    nuestros propios estilos de cerveza. Surgieron debates apasionados sobre 
-                                    perfiles de sabor, equilibrio entre maltas y lúpulos, y técnicas de 
-                                    dry-hopping. Fue un proceso colaborativo donde cada uno aportó su 
-                                    experiencia y creatividad para dar forma a lo que eventualmente se 
-                                    convertiría en los tres pilares de Trivium: una IPA robusta, una 
-                                    refrescante cerveza de trigo belga y una stout rica en sabores.
-
+                                    Cada botella refleja lo que somos:
+                                    pasión, dedicación y ganas de compartir algo único.
                                 </p>
                                 <img src="{{ asset('images/welcome/TRIVIUM-36.jpg') }}" alt>
                             </div>
                             <div class="paragraph vertical">
-                                <img src="{{ asset('images/welcome/TRIVIUM-38.jpg') }}" alt>
                                 <p>
-                                    Después de meses de perfeccionamiento y ajustes, finalmente lanzamos 
-                                    Trivium al mercado. Nuestra microcervecería no solo representa nuestra 
-                                    pasión compartida por la cerveza artesanal, sino también el fruto de 
-                                    nuestra dedicación y aprendizaje continuo. Cada botella de Trivium es un 
-                                    testimonio de nuestro compromiso con la calidad y la innovación en el 
-                                    mundo de la cerveza artesanal. Cada sorbo invita a nuestros clientes a 
-                                    descubrir y disfrutar de los sabores complejos y únicos que hemos 
-                                    logrado crear juntos.
+                                    Descubre en cada sorbo el sabor de una historia hecha con alma.
                                 </p>
+                                <img src="{{ asset('images/welcome/TRIVIUM-38.jpg') }}" alt>
                             </div>
                         </section>
                     </template>
