@@ -172,7 +172,7 @@
                                     <div class="right"  x-ref="right" >
                                         <input type="number" x-ref="`quantity_product_${product.id}`" name="quantity" class="quantity"
                                             value="1" autocomplete="off">
-                                        <div class="add-to-cart" @click="addToCart(product, quantity)">
+                                        <div class="add-to-cart" @click="addToCart(product, $el.parentElement.querySelector('input').value)">
                                             <i class="fa-solid fa-cart-shopping"></i>
                                         </div>
                                     </div>
