@@ -261,6 +261,6 @@
                 </article>
             </section>
         </aside>
-    <img class="background" x-ref="background" src="{{ asset('images/welcome/3cervezastrivium.jpg') }}" alt="Tres cervezas Trivium">
+    <img class="background" x-ref="background" src="{{ asset('images/welcome/4cervezastrivium.jpg') }}" alt="Cuatro cervezas Trivium">
 </body>
 </html>

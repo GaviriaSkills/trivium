@@ -760,7 +760,7 @@ body {
   overflow-y: auto
 }
 
-.dashboard #products {
+#products {
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
