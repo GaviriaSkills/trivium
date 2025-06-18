@@ -84,7 +84,7 @@
                                         <div>
                                             <div class="checklist-items">
 
-                                                <template x-for="(item, index) in step.items" :key="index">
+                                                <template x-for="(item, indexItem) in step.items" :key="indexItem">
                                                     <div class="checklist-item">
                                                         <label :for="`checklist-item-${index}_${indexProceso}`"><span
                                                                 x-text="item[0]"></span><input type="checkbox"
@@ -118,6 +118,7 @@
                                         </div>
                                     </template>
                                 </div>
+                                
                             </template>
                         </div>
                     </div>
@@ -128,71 +129,63 @@
 
     </template>
     <template x-if="section =='store'">
-        <section id="products" class="relevant-content" @scroll="handleInnerScroll($event)" x-data="productos">
-            <template x-if="showProductDetail">
-                <div class="product-detail">
-                    <div class="slideshow-container" @mousemove="appearControls" :data-index="slideshowIndex">
-                        <figure class="slideshow">
-                            <template x-for="(image, index) in productDetail.imagenes" :key="index">
-                                <img :src="`/storage/${image}`" alt>
-                            </template>
-                        </figure>
-                        <div class="prev-image" @click="prevSlideshowImage">
-                            <i class="fa-solid fa-circle-chevron-left"></i>
-                        </div>
-                        <div class="next-image" @click="nextSlideshowImage">
-                            <i class="fa-solid fa-circle-chevron-right"></i>
-                        </div>
-                        <div class="controls visible">
-                            <template x-for="(image, index) in productDetail.imagenes" :key="index">
-                                <img @click="updateSlideshow(index)" :class="index == 0 ? 'active' : ''"
-                                    :src="`/storage/${image}`" alt>
-                            </template>
-                        </div>
-                        <div class="scroll-left-controls visible" @mouseenter="scrollLeft"
-                            @mouseleave="clearInterval(intervalScroll)">
-                        </div>
-                        <div class="scroll-right-controls visible" @mouseenter="scrollRight"
-                            @mouseleave="clearInterval(intervalScroll)">
-                        </div>
-                    </div>
-                    <div class="right">
-                        <div class="close" @click="closeProductDetail">
-                            <i class="fa-solid fa-xmark"></i>
-                        </div>
-                        <h1 x-text="productDetail.nombre"></h1>
-                        <p class="description" x-text="productDetail.descripcion">
+        <section id="products" class="relevant-content" x-data="productos">
+           
+            <template x-if="!!products">
+                <template x-for="(product, index) in products" :key="product.id">
+                    <div x-data="producto" class="product-container" x-init="producto= product">
+                        <article class="product">
+                            <div class="slideshow-container"  x-ref="slideshow-container" @mousemove="appearControls()" :data-index="slideshowIndex">
+                                <figure class="slideshow">
+                                    <template x-for="(image, index) in product.imagenes" :key="index">
+                                        <img :src="`/storage/${image}`" alt @click="openImageModal(`/storage/${image}`, index)" style="cursor: pointer;">                                    </template>
+                                </figure>
+                                <div class="prev-image"  x-ref="prev-image" @click="prevSlideshowImage()">
+                                    <i class="fa-solid fa-circle-chevron-left"></i>
+                                </div>
+                                <div class="next-image"  x-ref="next-image" @click="nextSlideshowImage()">
+                                    <i class="fa-solid fa-circle-chevron-right"></i>
+                                </div>
+                                <div class="controls visible"  x-ref="controls" >
+                                    <template x-for="(image, indexI) in product.imagenes" :key="indexI">
+                                        <img @click="updateSlideshow(indexI)" :class="indexI == 0 ? 'active' : ''"
+                                            :src="`/storage/${image}`" alt>
+                                    </template>
+                                </div>
+                                <div class="scroll-left-controls visible"   x-ref="scroll-left-controls" @mouseenter="scrollLeft"
+                                    @mouseleave="clearInterval(intervalScroll)">
+                                </div>
+                                <div class="scroll-right-controls visible"  x-ref="scroll-right-controls"  @mouseenter="scrollRight"
+                                    @mouseleave="clearInterval(intervalScroll)">
+                                </div>
+                            </div>
+                            <div class="right">
+                                <h1 x-text="product.nombre"></h1>
+                                <p class="description" x-text="product.descripcion"></p>
 
-                        </p>
-                        <div class="bottom">
-                            <div class="info">
-                                <div class="left"><span class="price" x-text="`$ ${productDetail.precio}`"></span></div>
-                                <div class="right">
-                                    <input type="number" name="quantity" class="quantity">
-                                    <div class="add-to-cart">
-                                        <i class="fa-solid fa-cart-shopping"></i>
+                                </p>
+                                <div class="info">
+                                    <div class="left"  x-ref="left" ><span class="price" x-text="`$ ${product.precio}`"></span></div>
+                                    <div class="right"  x-ref="right" >
+                                        <input type="number" x-ref="`quantity_product_${product.id}`" name="quantity" class="quantity"
+                                            value="1" autocomplete="off">
+                                        <div class="add-to-cart" @click="addToCart(product, quantity)">
+                                            <i class="fa-solid fa-cart-shopping"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </template>
-            <template x-if="!!products">
-                <template x-for="product in products" :key="product.id">
-                    <div x-data="producto" class="product-container">
-                        <article class="product" @click="setProductDetail(product)">
-                            <figure><img :src="`/storage/${product.imagenes[0]}`" alt></figure>
-                            <h1 x-text="product.nombre"></h1>
-                            <div class="info">
-                                <div class="left"><span class="price" x-text="`$ ${product.precio}`"></span></div>
-                                <div class="right">
-                                    <input type="number" x-ref="`quantity_product_${product.id}`" name="quantity" class="quantity"
-                                        value="1" autocomplete="off">
-                                    <div class="add-to-cart" @click="addToCart(product, quantity)">
-                                        <i class="fa-solid fa-cart-shopping"></i>
-                                    </div>
-                                </div>
+                            <div x-show="showImageModal" class="product-modal" @click.self="closeImageModal">
+                                <button class="close-modal" @click.stop="closeImageModal()">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                                <button class="left-arrow" @click.stop="prevModalImage()" >
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </button>
+                                <img :src="modalImageUrl">
+                                <button class="right-arrow" @click.stop="nextModalImage()" >
+                                    <i class="fa-solid fa-chevron-right"></i>
+                                </button>
                             </div>
                         </article>
                     </div>
@@ -206,7 +199,7 @@
         </section>
     </template>
     <template x-if="section =='contact'">
-        <div id="contact" class="relevant-content" @scroll="handleInnerScroll($event)">
+        <div id="contact" class="relevant-content">
             <aside class="left">
                 <article class="qr">
                     <h1>Agréganos a WhatsApp:</h1>
@@ -236,7 +229,7 @@
         </div>
     </template>
     <template x-if="section =='settings'">
-        <div id="settings" class="relevant-content" @scroll="handleInnerScroll($event)">
+        <div id="settings" class="relevant-content">
             <div class="accordion" x-data="accordion">
                 <div class="accordion-search">
                     <input type="text" placeholder="Buscar ajustes" class="search" id="settings-search">
@@ -267,7 +260,38 @@
                         <i class="fa-solid fa-chevron-down" :class="openItem == 1 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 1 ? 'open' : ''">
-                        asdasd
+                        <fieldset>
+                            <legend>Preferencias</legend>
+
+                            <div class="option-row">
+                                <label for="tema">Tema</label>
+                                <div class="radio-inputs">
+                                <label class="radio">
+                                    <input type="radio" name="tema" checked />
+                                    <span class="nameTwo">Oscuro</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="tema" />
+                                    <span class="nameTwo">Claro</span>
+                                </label>
+                                </div>
+                            </div>
+
+                            <div class="option-row">
+                                <label for="lenguaje">Lenguaje</label>
+                                <div class="radio-inputs">
+                                <label class="radio">
+                                    <input type="radio" name="lenguaje" checked />
+                                    <span class="nameTwo">Español</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="lenguaje" />
+                                    <span class="nameTwo">English</span>
+                                </label>
+                                </div>
+                            </div>
+                            </fieldset>
+
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -276,7 +300,87 @@
                         <i class="fa-solid fa-chevron-down" :class="openItem == 2 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 2 ? 'open' : ''">
-                        asdasd
+                        <fieldset>
+                            <legend>Visión</legend>
+                            <div class="option-row">
+                                <div class="vision-panel">
+                                <label for="tamaño">Tamaño de letra</label>
+                                <div class="font-size-controls">
+                                    <button id="decrease" aria-label="Disminuir tamaño">−</button>
+                                    <span>A</span>
+                                    <button id="increase" aria-label="Aumentar tamaño">+</button>
+                                </div>
+                                </div>
+                            </div>
+
+                            <div class="option-row">
+                                <label for="Modo">Modo de alto contraste</label>
+                                <div class="radio-inputs">
+                                <label class="radio">
+                                    <input type="radio" name="contraste" checked />
+                                    <span class="nameTwo">Desactivado</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="contraste" />
+                                    <span class="nameTwo">Activado</span>
+                                </label>
+                                </div>
+                            </div>
+
+                            <div class="option-row">
+                                <label for="Brillo">Nivel de brillo</label>
+                                <div class="rangeWrapper">
+                                <input value="7" max="20" min="1" class="kawaii" type="range" />
+                                </div>
+                            </div>
+
+                            <div class="option-row">
+                                <label for="voz">Leer en voz alta</label>
+                                <div class="radio-inputs">
+                                <label class="radio">
+                                    <input type="radio" name="voz" checked />
+                                    <span class="nameTwo">Desactivado</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="voz" />
+                                    <span class="nameTwo">Activado</span>
+                                </label>
+                                </div>
+                            </div>
+                            </fieldset>
+
+                        <fieldset>
+                        <legend>Neurología</legend>
+
+                        <div class="option-row">
+                            <label for="destellantes">Imágenes destellantes</label>
+                            <div class="radio-inputs">
+                            <label class="radio">
+                                <input type="radio" name="destellantes" checked />
+                                <span class="nameTwo">Desactivado</span>
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="destellantes" />
+                                <span class="nameTwo">Activado</span>
+                            </label>
+                            </div>
+                        </div>
+
+                        <div class="option-row">
+                            <label for="animaciones">Animaciones</label>
+                            <div class="radio-inputs">
+                            <label class="radio">
+                                <input type="radio" name="animaciones" checked />
+                                <span class="nameTwo">Desactivado</span>
+                            </label>
+                            <label class="radio">
+                                <input type="radio" name="animaciones" />
+                                <span class="nameTwo">Activado</span>
+                            </label>
+                            </div>
+                        </div>
+                        </fieldset>
+
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -285,7 +389,94 @@
                         <i class="fa-solid fa-chevron-down" :class="openItem == 3 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 3 ? 'open' : ''">
-                        asdasd
+                        <fieldset>
+                        <legend>Activar o desactivar notificaciones</legend>
+
+                        <div class="option-rowNoti">
+                            <label for="destellantes">Todas las notificaciones</label>
+                            <div class="radio-inputsNoti">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                            </div>
+                        </div>
+
+                        <div class="option-rowNoti">
+                            <label for="animaciones">Notificaciones de estado de pedidos</label>
+                            <div class="radio-inputsNoti">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                            </div>
+                        </div>
+
+                        <div class="option-rowNoti">
+                            <label for="animaciones">Notificaciones de cambios en la plataforma</label>
+                            <div class="radio-inputsNoti">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                            </div>
+                        </div>
+
+                        <div class="option-rowNoti">
+                            <label for="animaciones">Notificaciones de ofertas especiales</label>
+                            <div class="radio-inputsNoti">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                            </div>
+                        </div>
+
+                        <div class="option-rowNoti">
+                            <label for="animaciones">Notificaciones de procesos de producción</label>
+                            <div class="radio-inputsNoti">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                            </div>
+                        </div>
+                        </fieldset>
+
+                        <fieldset>
+                        <legend>Destino de las notificaciones</legend>
+
+                        <div class="option-rowNoti">
+                            <label for="destellantes">Todos los destinos</label>
+                            <div class="radio-inputsNoti">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                            </div>
+                        </div>
+
+                        <div class="option-rowNoti">
+                            <label for="animaciones">Notificaciones al correo</label>
+                            <div class="radio-inputsNoti">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                            </div>
+                        </div>
+
+                        <div class="option-rowNoti">
+                            <label for="animaciones">Notificaciones al celular</label>
+                            <div class="radio-inputsNoti">
+                            <label class="switch">
+                                <input type="checkbox">
+                                <span class="slider"></span>
+                            </label>
+                            </div>
+                        </div>
+
+                        </fieldset>
                     </div>
                 </div>
                 <div class="accordion-item">
@@ -294,77 +485,92 @@
                         <i class="fa-solid fa-chevron-down" :class="openItem == 4 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 4 ? 'open' : ''">
-                        asdasd
+                         <fieldset>
+                            <legend>Versión</legend>
+
+                            <div class="option-row">
+                                <label for="version">Trivium V. 1.07.1 BrewMaster</label>
+                                <div class="radio-inputsNoti"></div>
+                            </div>
+
+                            <div class="option-row">
+                                <label for="lenguaje">Probas funciones experimentales</label>
+                                <div class="radio-inputs">
+                                <label class="radio">
+                                    <input type="radio" name="funcion" checked />
+                                    <span class="nameTwo">Desactivado</span>
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="funcion" />
+                                    <span class="nameTwo">Activado</span>
+                                </label>
+                                </div>
+                            </div>
+                            </fieldset>
                     </div>
                 </div>
             </div>
         </div>
     </template>
     <template x-if="section =='help'">
-        <div id="help" class="relevant-content" @scroll="handleInnerScroll($event)">
+        <div id="help" class="relevant-content">
             <div class="accordion" x-data="accordion">
                 <div class="accordion-search">
                     <input type="text" placeholder="Buscar ayuda" class="search" id="settings-search">
                 </div>
                 <div class="accordion-item">
                     <div class="accordion-header" @click="toggleItem(0)">
-                        <h1>¿Cómo puedo crear una cuenta?</h1>
+                        <h1>¿Cómo actualizo el inventario de cervezas disponibles?</h1>
                         <i class="fa-solid fa-chevron-down" :class="openItem == 0 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 0 ? 'open' : ''">
                         <div>
-                            Puedes crear una cuenta haciendo clic en el botón “Registrarse” en la parte superior de la página.
-                            Completa el formulario con tu nombre, correo electrónico y una contraseña segura.
-                            Una vez enviado, recibirás un correo de confirmación para activar tu cuenta.
+                            Desde el panel de administración, entra a la sección “Inventario” y edita las cantidades disponibles por tipo de cerveza.
                         </div>
                     </div>
                     
                 </div>
                 <div class="accordion-item">
                     <div class="accordion-header" @click="toggleItem(1)">
-                        <h1>¿Cómo restablezco mi contraseña?</h1>
+                        <h1>¿Dónde gestiono el proceso de producción?</h1>
                         <i class="fa-solid fa-chevron-down" :class="openItem == 1 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 1 ? 'open' : ''">
                         <div>
-                            Si olvidaste tu contraseña, ve a la página de inicio de sesión y haz clic en “¿Olvidaste tu contraseña?”.
-                            Ingresa tu correo electrónico y te enviaremos un enlace para que puedas establecer una nueva contraseña de forma segura.
+                            Ve al módulo “Gestión de producción”, donde puedes registrar nuevas tandas, controlar insumos y hacer seguimiento a los lotes en curso.
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
                     <div class="accordion-header" @click="toggleItem(2)">
-                        <h1>¿Cómo puedo contactar al servicio de atención al cliente?</h1>
+                        <h1>¿Cómo agrego un nuevo producto o cerveza al catálogo?</h1>
                         <i class="fa-solid fa-chevron-down" :class="openItem == 2 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 2 ? 'open' : ''">
                         <div>    
-                            Puedes contactarnos directamente a través del formulario en la sección Contacto, por WhatsApp escaneando nuestro código QR,
-                            o enviándonos un correo electrónico. Estamos disponibles para ayudarte con cualquier consulta o inconveniente.
+                            En el panel de control, selecciona “Productos” > “Agregar nuevo” y completa los campos con el nombre, descripción, imagen y stock.
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
                     <div class="accordion-header" @click="toggleItem(3)">
-                        <h1>¿Puedo cancelar o modificar mi pedido?</h1>
+                        <h1>¿Puedo modificar los precios o promociones desde la plataforma?</h1>
                         <i class="fa-solid fa-chevron-down" :class="openItem == 3 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 3 ? 'open' : ''">
                         <div>
-                            Sí, puedes cancelar o modificar tu pedido antes de que sea despachado.
-                            Por favor contáctanos lo antes posible a través del servicio de atención al cliente para gestionar el cambio.
+                            Sí, en la sección de productos puedes editar el precio base y aplicar descuentos o promociones según la temporada.
                         </div>
                     </div>
                 </div>
                 <div class="accordion-item">
                     <div class="accordion-header" @click="toggleItem(4)">
-                        <h1>¿Ofrecen servicios de entrega internacional?</h1>
+                        <h1>¿Qué hago si veo un error en los datos del sistema o el inventario?</h1>
                         <i class="fa-solid fa-chevron-down" :class="openItem == 4 ? 'open' : ''"></i>
                     </div>
                     <div class="accordion-body" :class="openItem == 4 ? 'open' : ''">
                         <div>
-                            Actualmente nuestras entregas están limitadas al territorio nacional.
-                            Sin embargo, estamos trabajando para habilitar envíos internacionales próximamente. ¡Te mantendremos informado!
+                           Puedes corregirlo directamente si tienes permisos de administrador o reportarlo al área técnica desde la sección “Soporte interno”. ¡Estaremos atentos!
                         </div>
                     </div>
                 </div>

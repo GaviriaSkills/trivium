@@ -148,12 +148,7 @@ Alpine.data('welcomeApp', () => ({
 }));
 
 Alpine.data('productos', () => ({
-    slideshowIndex: 0,
     products: null,
-    showProductDetail: false,
-    productDetail: null,
-    intervalThumbnails: null,
-    intervalScroll: null,
     init() {
         this.fetchProducts();
     },
@@ -165,71 +160,9 @@ Alpine.data('productos', () => ({
             })
             .catch(error => console.error('Error fetching products:', error));
     },
-    closeProductDetail() {
-        this.showProductDetail = false;
-        this.productDetail = null;
-    },
-    setProductDetail(producto) {
-        this.productDetail = producto;
-        this.showProductDetail = true;
-    },
-    nextSlideshowImage() {
-        this.slideshowIndex = (this.slideshowIndex + 1) % this.productDetail.imagenes.length;
-        this.updateSlideshow();
-    },
-    prevSlideshowImage() {
-        this.slideshowIndex = (this.slideshowIndex - 1 + this.productDetail.imagenes.length) % this.productDetail.imagenes.length;
-        this.updateSlideshow();
-    },
-    appearControls() {
-        const controls = document.querySelector(".controls");
-        const scrollRightControls = document.querySelector(".scroll-right-controls")
-        const scrollLeftControls = document.querySelector(".scroll-left-controls")
-        clearTimeout(this.intervalThumbnails)
-        controls.classList.add("visible")
-        scrollRightControls.classList.add("visible")
-        scrollLeftControls.classList.add("visible")
-        this.intervalThumbnails = setTimeout(function () {
-            controls.classList.remove("visible")
-            scrollRightControls.classList.remove("visible")
-            scrollLeftControls.classList.remove("visible")
-        }, 984)
-    },
-    scrollLeft() {
-        const controls = document.querySelector(".controls");
-        clearInterval(this.intervalScroll);
-        this.intervalScroll = setInterval(() => {
-            controls.scrollLeft -= 1;
-            this.appearControls();
-        }, 2);
-    },
-    scrollRight() {
-        const controls = document.querySelector(".controls");
-        clearInterval(this.intervalScroll);
-        this.intervalScroll = setInterval(() => {
-            controls.scrollLeft += 1;
-            this.appearControls();
-        }, 2);
-    },
-    updateSlideshow(index) {
-        const slideshowContainer = document.querySelector(".slideshow-container");
-
-        const slideshowImgs = slideshowContainer.querySelectorAll(".slideshow img");
-        const thumbnails = Array.from(document.querySelectorAll(".controls img"));
-
-
-        if (typeof index != "undefined") {
-            this.slideshowIndex = index;
-            this.appearControls()
-        }
-        slideshowContainer.setAttribute("data-index", this.slideshowIndex);
-        slideshowImgs[this.slideshowIndex].scrollIntoView({ behavior: "smooth", inline: "center" });
-        document.querySelector(".controls .active").classList.remove("active");
-        thumbnails[this.slideshowIndex].classList.add("active");
-        thumbnails[this.slideshowIndex].scrollIntoView({ behavior: "smooth", inline: "center" });
-
-        this.appearControls()
-    }
+  
+    
+    
 
 }))
 Alpine.data('produccion', () => ({
@@ -368,7 +301,6 @@ Alpine.data('produccion', () => ({
             case "checklist":
                 if (this.todoChuleado(step)) {
                     this.procesos[process].activeStep = nextStep;
-                    console.log(target)
                     target
                         .parentElement
                         .parentElement
@@ -461,7 +393,53 @@ Alpine.data('dashboardApp', () => ({
         help: 'ayuda',
         inventory: 'inventario',
     },
+    toggleProfile() {
+        this.openProfileLink = !this.openProfileLink;
+    },
+
+    closeProfile() {
+        this.openProfileLink = false;
+    },
+
+    logout() {
+        // Crear y enviar el formulario de logout
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'http://127.0.0.1:8000/logout';
+        
+        // Añadir el token CSRF
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        const csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = '_token';
+        csrfInput.value = csrfToken;
+        
+        form.appendChild(csrfInput);
+        document.body.appendChild(form);
+        form.submit();
+    },
+
+    
+
     routesInverse: {},
+    cart: [],
+    showCartModal: false,
+    addToCart(product, quantity = 1) {
+        const existing = this.cart.find(item => item.id === product.id);
+        if (existing) {
+            existing.quantity += parseInt(quantity);
+        } else {
+            this.cart.push({ ...product, quantity: parseInt(quantity) });
+        }
+    },
+    openCart() { this.showCartModal = true; },
+    closeCart() { this.showCartModal = false; },
+    removeFromCart(productId) {
+        this.cart = this.cart.filter(item => item.id !== productId);
+    },
+    clearCart() {
+        this.cart = [];
+    },
     init() {
         this.routesInverse = Object.fromEntries(
             Object.entries(this.routes).map(([key, value]) => [`/${value}`, key])
@@ -525,21 +503,99 @@ formatPrice(price){
 }
 }))
 Alpine.data('producto', () => ({
-    quantity: 0
+    quantity: 0,
+    producto: null,
+    productIndex: null,
+    slideshowIndex: 0,
+
+    intervalThumbnails: null,
+    intervalScroll: null,
+
+    // ...existing code...
+showImageModal: false,
+modalImageUrl: null,
+modalImageIndex: 0,
+
+openImageModal(url, index = 0) {
+    this.modalImageUrl = url;
+    this.modalImageIndex = index;
+    this.showImageModal = true;
+},
+closeImageModal() {
+    this.showImageModal = false;
+    this.modalImageUrl = null;
+},
+nextModalImage() {
+    if (!this.producto || !this.producto.imagenes) return;
+    this.modalImageIndex = (this.modalImageIndex + 1) % this.producto.imagenes.length;
+    this.modalImageUrl = `/storage/${this.producto.imagenes[this.modalImageIndex]}`;
+},
+prevModalImage() {
+    if (!this.producto || !this.producto.imagenes) return;
+    this.modalImageIndex = (this.modalImageIndex - 1 + this.producto.imagenes.length) % this.producto.imagenes.length;
+    this.modalImageUrl = `/storage/${this.producto.imagenes[this.modalImageIndex]}`;
+},
+
+nextSlideshowImage() {
+        this.slideshowIndex = (this.slideshowIndex + 1) % this.producto.imagenes.length;
+        this.updateSlideshow();
+    },
+    prevSlideshowImage() {
+        this.slideshowIndex = (this.slideshowIndex - 1 + this.producto.imagenes.length) % this.producto.imagenes.length;
+        this.updateSlideshow();
+    },
+appearControls() {
+        const controls = this.$refs["controls"];
+        const scrollRightControls = this.$refs["scroll-right-controls"];
+        const scrollLeftControls = this.$refs["scroll-left-controls"];
+        clearTimeout(this.intervalThumbnails)
+        controls.classList.add("visible")
+        scrollRightControls.classList.add("visible")
+        scrollLeftControls.classList.add("visible")
+        this.intervalThumbnails = setTimeout(function () {
+            controls.classList.remove("visible")
+            scrollRightControls.classList.remove("visible")
+            scrollLeftControls.classList.remove("visible")
+        }, 984)
+    },
+    scrollLeft() {
+        const controls = this.$refs["controls"];
+        clearInterval(this.intervalScroll);
+        this.intervalScroll = setInterval(() => {
+            controls.scrollLeft -= 1;
+            this.appearControls();
+        }, 2);
+    },
+    scrollRight() {
+        const controls = this.$refs["controls"];
+        clearInterval(this.intervalScroll);
+        this.intervalScroll = setInterval(() => {
+            controls.scrollLeft += 1;
+            this.appearControls();
+        }, 2);
+    },
+    updateSlideshow(index) {
+        const slideshowContainer = this.$refs["slideshow-container"];
+        const controls = this.$refs["controls"];
+
+        const slideshowImgs = slideshowContainer.querySelectorAll(".slideshow img");
+        const thumbnails = Array.from(controls.querySelectorAll("img"));
+
+
+        if (typeof index != "undefined") {
+            this.slideshowIndex = index;
+            this.appearControls()
+        }
+        slideshowContainer.setAttribute("data-index", this.slideshowIndex);
+        slideshowImgs[this.slideshowIndex].scrollIntoView({ behavior: "smooth", inline: "center", block: "center" });
+        controls.querySelector(".active").classList.remove("active");
+        thumbnails[this.slideshowIndex].classList.add("active");
+        thumbnails[this.slideshowIndex].scrollIntoView({ behavior: "smooth", inline: "center", block: "center" });
+
+        this.appearControls()
+    }
 }))
 
-//Accordion which only one item can be open at a time
-Alpine.data('accordionItem', () => ({
-    open: false,
-    toggle() {
-        this.open = !this.open;
-        if (this.open) {
-            this.$dispatch('accordion:open', { item: this });
-        } else {
-            this.$dispatch('accordion:close', { item: this });
-        }
-    },
-}))
 Alpine.data('accordion', () => ({
     openItem: null,
     toggleItem(index) {

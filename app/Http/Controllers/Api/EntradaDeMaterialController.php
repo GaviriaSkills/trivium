@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 class EntradaDeMaterialController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Mostrar todas las entradas de material.
      */
     public function index()
     {
@@ -19,7 +19,7 @@ class EntradaDeMaterialController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Crear una nueva entrada de material.
      */
     public function store(Request $request)
     {
