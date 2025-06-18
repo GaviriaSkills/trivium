@@ -95,7 +95,7 @@
             @yield('content')
         </section>
     </aside>
-    <img class="background" src="{{ asset('images/welcome/3cervezastrivium.jpg') }}" alt="Tres cervezas Trivium">
+    <img class="background" src="{{ asset('images/welcome/4cervezastrivium.jpg') }}" alt="Cuatros cervezas Trivium">
 </body>
 
 </html>
