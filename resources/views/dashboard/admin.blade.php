@@ -55,6 +55,9 @@
 
 @section('content')
     <template x-if="section =='home'">
+        <div class="logo-container">
+            <img class="logo-sena" x-ref='logo-sena' src="{{ asset('images/dashboard/sena.png') }}" alt="logo sena" >
+        </div>
         <a href=""></a>
     </template>
     <template x-if="section =='production'">
