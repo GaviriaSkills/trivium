@@ -12,10 +12,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="welcome" x-data="welcomeApp">
+<body class="welcome" x-data="welcomeApp" x-cloak>
 
         <aside :style="{visibility: loaded ? 'visible' : 'hidden'}" class="content" x-ref="content" @scroll="handleScroll()">
-            <section class="bottom" x-ref="bottom" :style="{paddingTop: bottomPaddingTop + 'px'}">
+            <section class="bottom" x-ref="bottom" :style="{paddingTop: bottomPaddingTop + 'px', transition:systemScroll?'none': 'all 1s ease-in-out'}">
                 <figure x-ref="figure" :style="{paddingTop: figurePaddingTop + 'px'}">
                     <img x-cloak x-ref="figureImg" :style="{width: figureImgWidth + 'px'}" id="home-link" class="link active" src="{{ asset('images/welcome/TRIVIUM_recortado.png') }}"
                         alt="Logo de Trivium" @click="setSection('home')" />

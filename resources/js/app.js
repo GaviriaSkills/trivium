@@ -20,7 +20,7 @@ Alpine.data('welcomeApp', () => ({
     bottomPaddingTop: window.location.pathname=="/" ? 75 : 0,
     figureImgWidth: window.location.pathname=="/" ? 160 : 85,
     figurePaddingTop: window.location.pathname=="/" ? 0 : 5,
-    systemScroll: false,
+    systemScroll: true,
     init() {
         this.routesInverse = Object.fromEntries(
             Object.entries(this.routes).map(([key, value]) => [`/${value}`, key])
@@ -94,8 +94,6 @@ Alpine.data('welcomeApp', () => ({
         
         if(behavior== "auto"){
             this.systemScroll = true;
-            this.bottomPaddingTop= 0;
-            this.figureImgWidth = 85;
             this.$refs.content.scrollTop= 0 + parseInt(getComputedStyle(document.querySelector(".content"))["padding-top"])
            console.log(this.$refs.content.scrollTop)
             this.systemScroll = false;
