@@ -89,9 +89,9 @@
 
                                                 <template x-for="(item, indexItem) in step.items" :key="indexItem">
                                                     <div class="checklist-item">
-                                                        <label :for="`checklist-item-${index}_${indexProceso}`"><span
+                                                        <label :for="`checklist-item-${index}_${indexProceso}_${indexItem}`"><span
                                                                 x-text="item[0]"></span><input type="checkbox"
-                                                                :id="`checklist-item-${index}_${indexProceso}`"
+                                                                :id="`checklist-item-${index}_${indexProceso}_${indexItem}`"
                                                                 :value="item[0]" x-model="item[1]" @input="$nextTick(()=>{updateStepsProduccion(proceso)})"></label>
                                                     </div>
                                                 </template>
@@ -590,7 +590,7 @@
                         <div class="return" @click="goBack" x-show="sections[section].subsection != 'index'">
                             <i class="fa-solid fa-chevron-left"></i>
                         </div>
-                        <h1 x-text="capitalize(sections[section].pluralName)"></h1>
+                        <h1 x-text="getSectionTitle()"></h1>
                     </div>
                     <div class="right">
                         <template x-if="sections[section].searchManagement">
@@ -1506,7 +1506,7 @@
                                                     <td x-text="getListQuantitiesProcesoInsumos(proceso.insumos)"></td>
                                                     <td>
                                                         <div class="actions">
-                                                            <i @click.stop="destroy(produccion.id)"
+                                                            <i @click.stop="destroy(proceso.id)"
                                                                 class="fa-solid fa-trash-can"></i>
                                                             <i @click.stop="edit(proceso)"
                                                                 class="fa-solid fa-pen-to-square"></i>
@@ -1765,7 +1765,7 @@
                                         <template x-if="sections.entradas.rows == null">
                                             <tbody>
                                                 <tr>
-                                                    <td colspan="4">Cargando</td>
+                                                    <td colspan="6">Cargando</td>
                                                 </tr>
                                             </tbody>
                                         </template>
@@ -1773,7 +1773,7 @@
                                             x-if="sections.entradas.rows != null && sections.entradas.rows.length == 0">
                                             <tbody>
                                                 <tr>
-                                                    <td colspan="4">No hay entradas de material</td>
+                                                    <td colspan="6">No hay entradas de material</td>
                                                 </tr>
                                             </tbody>
                                         </template>
