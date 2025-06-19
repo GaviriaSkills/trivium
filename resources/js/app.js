@@ -69,6 +69,8 @@ Alpine.data('welcomeApp', () => ({
         this.autoScrollHeaderTop();
     },
     setSection(section, mode) {
+        
+
         if(typeof mode !="undefined" && mode == "abrupt"){
             this.previousSection = this.section == "home" ? this.previousSection : this.section;
             this.section= section;
@@ -391,6 +393,27 @@ Alpine.data('dashboardApp', () => ({
         help: 'ayuda',
         inventory: 'inventario',
     },
+    routesInverse: {},
+    cart: [],
+    showCartModal: false,
+    notification: null,
+    async notify(message, type = 'info', subtype = "dismiss") {
+        return await new Promise(resolve => {
+            this.notification = {
+                message,
+                type,
+                subtype,
+                onConfirm: () => { this.notification = null; resolve(true); },
+                onCancel: () => { this.notification = null; resolve(false); }
+            };
+        });
+},
+    resolveNotification(){
+        this.notification = false;
+    },
+    cancelNotification(){
+        this.notification = null;
+    },
     toggleProfile() {
         this.openProfileLink = !this.openProfileLink;
     },
@@ -419,9 +442,7 @@ Alpine.data('dashboardApp', () => ({
 
     
 
-    routesInverse: {},
-    cart: [],
-    showCartModal: false,
+    
     addToCart(product, quantity = 1) {
         const existing = this.cart.find(item => item.id === product.id);
         if (existing) {
@@ -458,6 +479,10 @@ Alpine.data('dashboardApp', () => ({
         this.openProfileLink = false;
     },
     navigateToSection(target) {
+        this.$nextTick(()=>{
+            this.notification.onCancel()
+        })
+
         let link = target.closest(".link")
         this.section = link.id.replace("-link", "");
         document.querySelector(".link.active").classList.remove("active");
@@ -614,6 +639,7 @@ Alpine.data('managementData', () => ({
             subsection: 'index',
             pluralName: 'productos',
             singularName: 'producto',
+            masculine: true,
             searchManagement: '',
             allRows: '',
             rows: null,
@@ -626,6 +652,7 @@ Alpine.data('managementData', () => ({
             subsection: 'index',
             pluralName: 'ventas',
             singularName: 'venta',
+            masculine: false,
             searchManagement: '',
             allRows: null,
             rows: null,
@@ -638,6 +665,7 @@ Alpine.data('managementData', () => ({
             subsection: 'index',
             pluralName: 'producciones',
             singularName: 'producción',
+            masculine: false,
             searchManagement: '',
             allRows: null,
             rows: null,
@@ -649,6 +677,7 @@ Alpine.data('managementData', () => ({
             subsection: 'index',
             pluralName: 'procesos',
             singularName: 'proceso',
+            masculine: true,
             searchManagement: '',
             allRows: null,
             rows: null,
@@ -661,6 +690,7 @@ Alpine.data('managementData', () => ({
             subsection: 'index',
             pluralName: 'insumos',
             singularName: 'insumo',
+            masculine: true,
             searchManagement: '',
             allRows: null,
             rows: null,
@@ -671,6 +701,7 @@ Alpine.data('managementData', () => ({
             subsection: 'index',
             pluralName: 'entradas',
             singularName: 'entrada',
+            masculine: false,
             searchManagement: '',
             allRows: null,
             rows: null,
@@ -685,6 +716,23 @@ Alpine.data('managementData', () => ({
     },
     normalize(text){
         return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    },
+    getSectionTitle(){
+        let section= this.sections[this.section]
+        switch(section.subsection){
+            case "index":
+                return this.capitalize(section.pluralName);
+                break;
+            case "edit":
+                return `Editar ${section.singularName}`;
+                break;
+            case "view":
+                return `Ver ${section.singularName}`;
+                break;
+            case "create":
+                return `${section.masculine?"Nuevo":"Nueva"} ${section.singularName}`;
+                break;
+        }
     },
     async reverseUrlForSection(){
         const url= window.location.hash.replace("#", "");
@@ -851,6 +899,9 @@ Alpine.data('managementData', () => ({
             this.filter();
     },
     setSection(section) {
+        this.$nextTick(()=>{
+            this.notification.onCancel();
+        })
         this.section = section;
         switch (this.sections[this.section].subsection) {
             case "index":
@@ -1454,7 +1505,12 @@ Alpine.data('managementData', () => ({
                 break;
         }
     },
-    destroy(id) {
+    async destroy(id) {
+        const result = await this.notify(`¿Estás seguro de que quieres eliminar ${this.sections[this.section].masculine?"el":"la"} ${this.sections[this.section].singularName}?`, 'alert', 'confirm');
+        if (!result) {
+            // User canceled, do not delete
+            return;
+        }
         fetch(`http://localhost:8000/api/${this.sections[this.section].api}/${id}`, {
             method: 'DELETE',
             headers: {
