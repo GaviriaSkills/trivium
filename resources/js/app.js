@@ -487,7 +487,8 @@ Alpine.data('dashboardApp', () => ({
         this.section = link.id.replace("-link", "");
         document.querySelector(".link.active").classList.remove("active");
         link.classList.add("active");
-        history.pushState({ page: 1 }, "", `/${this.routes[this.section]}${window.location.hash}`);
+        
+        history.pushState({ page: 1 }, "", `/${this.routes[this.section]}${this.section== "inventory"?window.location.hash:""}`);
     },
     plural(palabra, cantidad) {
     // Si sólo hay uno, devuelve la palabra en singular

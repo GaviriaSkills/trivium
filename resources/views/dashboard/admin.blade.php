@@ -89,9 +89,9 @@
 
                                                 <template x-for="(item, indexItem) in step.items" :key="indexItem">
                                                     <div class="checklist-item">
-                                                        <label :for="`checklist-item-${index}_${indexProceso}`"><span
+                                                        <label :for="`checklist-item-${index}_${indexProceso}_${indexItem}`"><span
                                                                 x-text="item[0]"></span><input type="checkbox"
-                                                                :id="`checklist-item-${index}_${indexProceso}`"
+                                                                :id="`checklist-item-${index}_${indexProceso}_${indexItem}`"
                                                                 :value="item[0]" x-model="item[1]" @input="$nextTick(()=>{updateStepsProduccion(proceso)})"></label>
                                                     </div>
                                                 </template>
