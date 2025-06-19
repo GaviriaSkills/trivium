@@ -480,7 +480,7 @@ Alpine.data('dashboardApp', () => ({
     },
     navigateToSection(target) {
         this.$nextTick(()=>{
-            this.notification.onCancel()
+            this.notification?.onCancel()
         })
 
         let link = target.closest(".link")
@@ -901,7 +901,7 @@ Alpine.data('managementData', () => ({
     },
     setSection(section) {
         this.$nextTick(()=>{
-            this.notification.onCancel();
+            this.notification?.onCancel();
         })
         this.section = section;
         switch (this.sections[this.section].subsection) {

@@ -406,7 +406,8 @@ body {
     & input {
       width: 5em;
       height: 1.5em;
-      margin-right: 0.6em
+      margin-right: 0.6em;
+      color: #000;
     }
 
     & .add-to-cart {
