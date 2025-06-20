@@ -89,13 +89,6 @@
                                 </p>
                                 <div class="info">
                                     <div class="left"  x-ref="left" ><span class="price" x-text="`$ ${product.precio}`"></span></div>
-                                    <div class="right"  x-ref="right" >
-                                        <input type="number" x-ref="`quantity_product_${product.id}`" name="quantity" class="quantity"
-                                            value="1" autocomplete="off">
-                                        <div class="add-to-cart" @click="addToCart(product, quantity)">
-                                            <i class="fa-solid fa-cart-shopping"></i>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div x-show="showImageModal" class="product-modal" @click.self="closeImageModal">

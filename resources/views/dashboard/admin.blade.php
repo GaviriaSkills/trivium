@@ -1844,16 +1844,6 @@
                         <i class="fa-solid fa-cubes-stacked"></i>
                         <h1>Procesos</h1>
                     </div>
-                    <div class="section stock-bajo" :class="section == 'Stock Bajo' ? 'active' : ''"
-                        @click="setSection('Stock Bajo')">
-                        <i class="fa-solid fa-triangle-exclamation"></i>
-                        <h1>Stock Bajo</h1>
-                    </div>
-                    <div class="section estadisticas" :class="section == 'Estadísticas' ? 'active' : ''"
-                        @click="setSection('Estadísticas')">
-                        <i class="fa-solid fa-chart-simple"></i>
-                        <h1>Estadísticas</h1>
-                    </div>
                 </aside>
             </section>
         </div>
